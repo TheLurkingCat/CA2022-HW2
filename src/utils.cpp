@@ -3,7 +3,7 @@
 #include <iostream>
 
 using Eigen::Matrix4f;
-using Eigen::Vector4f;
+using Eigen::Vector3f;
 
 namespace {
 std::filesystem::path findAssetPath() {
@@ -21,18 +21,30 @@ std::filesystem::path findAssetPath() {
 }
 }  // namespace
 
-Matrix4f lookAt(const Eigen::Ref<const Eigen::Vector4f>& position,
-                const Eigen::Ref<const Eigen::Vector4f>& front,
-                const Eigen::Ref<const Eigen::Vector4f>& up) {
-  Vector4f f = front.normalized();
-  Vector4f u = up.normalized();
-  Vector4f s = f.cross3(u).normalized();
-  u = s.cross3(f);
+Eigen::Quaternionf rotateZYX(const Eigen::Ref<const Eigen::Vector3f>& rotation) {
+  return Eigen::AngleAxisf(rotation[2], Eigen::Vector3f::UnitZ()) *
+         Eigen::AngleAxisf(rotation[1], Eigen::Vector3f::UnitY()) *
+         Eigen::AngleAxisf(rotation[0], Eigen::Vector3f::UnitX());
+}
+
+Eigen::Quaternionf rotateXYZ(const Eigen::Ref<const Eigen::Vector3f>& rotation) {
+  return Eigen::AngleAxisf(rotation[0], Eigen::Vector3f::UnitX()) *
+         Eigen::AngleAxisf(rotation[1], Eigen::Vector3f::UnitY()) *
+         Eigen::AngleAxisf(rotation[2], Eigen::Vector3f::UnitZ());
+}
+
+Matrix4f lookAt(const Eigen::Ref<const Eigen::Vector3f>& position,
+                const Eigen::Ref<const Eigen::Vector3f>& front,
+                const Eigen::Ref<const Eigen::Vector3f>& up) {
+  Vector3f f = front.normalized();
+  Vector3f u = up.normalized();
+  Vector3f s = f.cross(u).normalized();
+  u = s.cross(f);
 
   Matrix4f mat(Matrix4f::Zero());
-  mat.row(0) = s;
-  mat.row(1) = u;
-  mat.row(2) = -f;
+  mat.row(0).head<3>() = s;
+  mat.row(1).head<3>() = u;
+  mat.row(2).head<3>() = -f;
   mat.row(3) << 0, 0, 0, 1;
   mat(0, 3) = -s.dot(position);
   mat(1, 3) = -u.dot(position);
