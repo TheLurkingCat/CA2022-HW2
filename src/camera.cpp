@@ -7,16 +7,15 @@
 
 using Eigen::Matrix4f;
 using Eigen::Vector3f;
-using Eigen::Vector4f;
 
-Camera::Camera(const Eigen::Ref<const Eigen::Vector4f>& _position) :
-    _front(Vector4f::UnitZ()),
+Camera::Camera(const Eigen::Ref<const Eigen::Vector3f>& _position, Eigen::Quaternionf rotation) :
+    _front(Vector3f::UnitZ()),
     _position(_position),
-    _up(Vector4f::UnitY()),
-    _right(Vector4f::UnitX()),
+    _up(Vector3f::UnitY()),
+    _right(Vector3f::UnitX()),
     _projectionMatrix(Matrix4f::Identity()),
     _viewMatrix(Matrix4f::Identity()),
-    _rotation(Eigen::Quaternionf::Identity()) {
+    _rotation(rotation) {
   updateView();
   updateProjection();
 }
@@ -62,9 +61,9 @@ bool Camera::move(GLFWwindow* window) {
 }
 
 void Camera::updateView() {
-  _front.head<3>() = _rotation * Vector3f::UnitZ();
-  _up.head<3>() = _rotation * Vector3f::UnitY();
-  _right = _front.cross3(_up);
+  _front = _rotation * Vector3f::UnitZ();
+  _up = _rotation * Vector3f::UnitY();
+  _right = _front.cross(_up);
   _viewMatrix = lookAt(_position, _front, _up);
 }
 

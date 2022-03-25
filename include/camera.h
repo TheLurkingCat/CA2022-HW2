@@ -9,25 +9,26 @@ class Camera {
   /**
    * @brief Construct a new Camera.
    *
-   * @param position The position of the camera. This w value should be 1.0f
+   * @param position The position of the camera.
    */
-  explicit Camera(const Eigen::Ref<const Eigen::Vector4f>& position);
+  explicit Camera(const Eigen::Ref<const Eigen::Vector3f>& position,
+                  Eigen::Quaternionf rotation = Eigen::Quaternionf::Identity());
   /**
    * @brief Get the front vector of the camera. (Camera facing)
    */
-  Eigen::Ref<Eigen::Vector4f> front() { return _front; }
+  Eigen::Ref<Eigen::Vector3f> front() { return _front; }
   /**
    * @brief Get the position of the camera.
    */
-  Eigen::Ref<Eigen::Vector4f> position() { return _position; }
+  Eigen::Ref<Eigen::Vector3f> position() { return _position; }
   /**
    * @brief Get the up vector of the camera.
    */
-  Eigen::Ref<Eigen::Vector4f> up() { return _up; }
+  Eigen::Ref<Eigen::Vector3f> up() { return _up; }
   /**
    * @brief Get the right vector of the camera.
    */
-  Eigen::Ref<Eigen::Vector4f> right() { return _right; }
+  Eigen::Ref<Eigen::Vector3f> right() { return _right; }
   /**
    * @brief Get the 4*4 projection matrix of the camera.
    */
@@ -59,10 +60,10 @@ class Camera {
   void updateView();
 
  private:
-  Eigen::Vector4f _front;
-  Eigen::Vector4f _position;
-  Eigen::Vector4f _up;
-  Eigen::Vector4f _right;
+  Eigen::Vector3f _front;
+  Eigen::Vector3f _position;
+  Eigen::Vector3f _up;
+  Eigen::Vector3f _right;
   Eigen::Matrix4f _projectionMatrix;
   Eigen::Matrix4f _viewMatrix;
   Eigen::Quaternionf _rotation;
