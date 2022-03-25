@@ -7,8 +7,9 @@ int windowHeight = 0;
 int speedMultiplier = 1;
 
 bool isSimulating = false;
-bool isTimeWarping =  false;
+bool isMotionChanged = false;
 bool isUsingCameraPanel = false;
 
 int maxFrame = 0;
 int currentFrame = 0;
+int currentMotion = 0;

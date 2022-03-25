@@ -4,9 +4,14 @@ set(HW2_SOURCE
   ${HW2_SOURCE_DIR}/buffer.cpp
   ${HW2_SOURCE_DIR}/camera.cpp
   ${HW2_SOURCE_DIR}/configs.cpp
+  ${HW2_SOURCE_DIR}/cylinder.cpp
   ${HW2_SOURCE_DIR}/glcontext.cpp
   ${HW2_SOURCE_DIR}/gui.cpp
+  ${HW2_SOURCE_DIR}/kinematics.cpp
+  ${HW2_SOURCE_DIR}/motion.cpp
+  ${HW2_SOURCE_DIR}/posture.cpp
   ${HW2_SOURCE_DIR}/shader.cpp
+  ${HW2_SOURCE_DIR}/skeleton.cpp
   ${HW2_SOURCE_DIR}/utils.cpp
   ${HW2_SOURCE_DIR}/vertexarray.cpp
 )

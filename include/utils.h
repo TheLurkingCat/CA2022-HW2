@@ -4,6 +4,7 @@
 #include <string>
 
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 
 #ifndef DELETE_COPY
 #define DELETE_COPY(ClassName)           \
@@ -48,10 +49,11 @@
 #endif
 
 constexpr float toRadians(double x) { return static_cast<float>(x * EIGEN_PI / 180); }
-
-Eigen::Matrix4f lookAt(const Eigen::Ref<const Eigen::Vector4f> &position,
-                       const Eigen::Ref<const Eigen::Vector4f> &front,
-                       const Eigen::Ref<const Eigen::Vector4f> &up);
+Eigen::Quaternionf rotateZYX(const Eigen::Ref<const Eigen::Vector3f> &rotation);
+Eigen::Quaternionf rotateXYZ(const Eigen::Ref<const Eigen::Vector3f> &rotation);
+Eigen::Matrix4f lookAt(const Eigen::Ref<const Eigen::Vector3f> &position,
+                       const Eigen::Ref<const Eigen::Vector3f> &front,
+                       const Eigen::Ref<const Eigen::Vector3f> &up);
 Eigen::Matrix4f perspective(float fov, float aspect, float zNear, float zFar);
 Eigen::Matrix4f ortho(float left, float right, float bottom, float top, float zNear, float zFar);
 std::filesystem::path findPath(const std::string &filename);

@@ -67,7 +67,7 @@ int main() {
   glClearColor(0, 0, 0, 1);
   glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &alignSize);
 
-  speedMultiplier = (240 / context.getRefreshRate());
+  speedMultiplier = std::max(1, context.getRefreshRate() / 50);
   GUI gui(window, context.getOpenGLVersion());
   // Initialize shaders
   ShaderProgram renderer;
@@ -80,17 +80,29 @@ int main() {
     renderer.link();
     renderer.detach(&vs, &fs);
     renderer.use();
-    renderer.uniformBlockBinding("model", 0);
-    renderer.uniformBlockBinding("camera", 1);
+    renderer.uniformBlockBinding("camera", 0);
+    renderer.setUniform("inputColor", Eigen::Vector4f(0.7f, 0.7f, 0.0f, 1.0f));
   }
+  // -0.121711i + 0.543665j + -0.080055k + -0.826563
+  Eigen::Quaternionf init(-0.826563, -0.121711, 0.543665, -0.080055);
+  Camera camera(Eigen::Vector3f(25.0f, 12.0f, -10.0f), init);
+  camera.updateView();
 
-  Camera camera(Eigen::Vector4f(0, 2, -10, 1));
   UniformBuffer cameraUBO;
   cameraUBO.allocate(uboAlign(20 * sizeof(GLfloat)));
   cameraUBO.load(0, 16 * sizeof(GLfloat), camera.viewProjectionMatrix().data());
   cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.position().data());
-  cameraUBO.bindUniformBlockIndex(1, 0, uboAlign(20 * sizeof(GLfloat)));
+  cameraUBO.bindUniformBlockIndex(0, 0, uboAlign(20 * sizeof(GLfloat)));
 
+  Skeleton skeleton(findPath("skeleton.asf").string(), 0.4f);
+  Cylinder cylinder(skeleton.size());
+  Motion motions[3] = {Motion(findPath("running.amc").string(), skeleton),
+                       Motion(findPath("punch_kick.amc").string(), skeleton)};
+  motions[2] = timewarping(motions[1], 160, 150);
+  skeleton.setModelMatrix(cylinder.modelMatrix());
+  maxFrame = motions[currentMotion].size();
+
+  int counter = 0;
   while (!glfwWindowShouldClose(window)) {
     // Polling events.
     glfwPollEvents();
@@ -105,7 +117,23 @@ int main() {
       cameraUBO.load(0, 16 * sizeof(GLfloat), camera.viewProjectionMatrix().data());
       cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.position().data());
     }
+    if (isMotionChanged) {
+      maxFrame = motions[currentMotion].size();
+      currentFrame = 0;
+      counter = 0;
+      isMotionChanged = false;
+      isSimulating = false;
+    }
+    if (isSimulating) ++counter;
+    if (counter >= speedMultiplier) {
+      (++currentFrame) %= maxFrame;
+      counter %= speedMultiplier;
+    }
+    forwardKinematics(motions[currentMotion].posture(currentFrame), skeleton.bone(0));
+    skeleton.setModelMatrix(cylinder.modelMatrix());
+    cylinder.draw();
     gui.render();
+
 #ifdef __APPLE__
     glFlush();
 #endif

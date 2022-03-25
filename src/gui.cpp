@@ -33,12 +33,11 @@ void renderMainPanel() {
     if (ImGui::Button(ICON_PLUS)) {
       currentFrame = std::min(maxFrame - 1, currentFrame + 1);
     }
-    ImGui::Text("Time warping:");
+    isMotionChanged |= ImGui::RadioButton("running", &currentMotion, 0);
     ImGui::SameLine();
-    if (ImGui::Button(isTimeWarping ? "ON" : "OFF")) {
-      isTimeWarping = !isTimeWarping;
-      currentFrame = 0;
-    }
+    isMotionChanged |= ImGui::RadioButton("punch", &currentMotion, 1);
+    ImGui::SameLine();
+    isMotionChanged |= ImGui::RadioButton("punch(warped)", &currentMotion, 2);
   }
   ImGui::End();
 }
