@@ -33,7 +33,7 @@ Skeleton::Skeleton(const std::string &file_name, float scale_) noexcept : _scale
   // store it in rotationParentCurrent variable for each bone
   computeRotation2Parent(&bones[0]);
   // Compute global facing of the bones
-  for (int i = 0; i < bones.size(); ++i) {
+  for (size_t i = 0; i < bones.size(); ++i) {
     auto &&bone = bones[i];
     Eigen::Vector3f rotaionAxis = Eigen::Vector3f::UnitZ().cross(bone.direction);
     float dotValue = Eigen::Vector3f::UnitZ().dot(bone.direction);
@@ -46,7 +46,7 @@ Skeleton::Skeleton(const std::string &file_name, float scale_) noexcept : _scale
 }
 
 Bone *Skeleton::bone(const std::string &name) {
-  for (int i = 0; i < bones.size(); ++i) {
+  for (size_t i = 0; i < bones.size(); ++i) {
     if (name == bones[i].name) {
       return &bones[i];
     }
@@ -55,7 +55,7 @@ Bone *Skeleton::bone(const std::string &name) {
 }
 
 const Bone *const Skeleton::bone(const std::string &name) const {
-  for (int i = 0; i < bones.size(); ++i) {
+  for (size_t i = 0; i < bones.size(); ++i) {
     if (name == bones[i].name) {
       return &bones[i];
     }
@@ -64,7 +64,7 @@ const Bone *const Skeleton::bone(const std::string &name) const {
 }
 
 void Skeleton::setModelMatrix(Eigen::Ref<Eigen::Matrix4Xf> modelMatrix) {
-  for (int i = 0; i < bones.size(); ++i) {
+  for (size_t i = 0; i < bones.size(); ++i) {
     auto &&bone = bones[i];
     Eigen::Vector3f trans = 0.5f * (bone.startPosition + bone.endPosition);
     Eigen::Affine3f model = bone.globalFacing;
@@ -214,7 +214,7 @@ int Skeleton::setChildrenSibling(Bone *parent, Bone *child) {
  * to local coordinate
  */
 void Skeleton::rotateLocalCoordinate() {
-  for (int i = 1; i < bones.size(); ++i) {
+  for (size_t i = 1; i < bones.size(); ++i) {
     // Transform direction vector into local coordinate system
     bones[i].direction = Eigen::Affine3f(rotateXYZ(-bones[i].axis)) * bones[i].direction;
   }
@@ -233,7 +233,7 @@ void Skeleton::computeRotation2Parent(Bone *bone) {
   rootRotation.normalize();
   bone[0].rotationParentCurrent = rootRotation.toRotationMatrix();
   // Compute rotationParentCurrent for all other bones
-  for (int i = 0; i < bones.size(); i++) {
+  for (size_t i = 0; i < bones.size(); i++) {
     if (bone[i].child != nullptr) {
       this->computeRotationParent2Child(&bone[i], bone[i].child);
       // compute parent child siblings...
