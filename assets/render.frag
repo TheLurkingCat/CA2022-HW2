@@ -4,7 +4,6 @@ layout(location = 0) out vec4 FragColor;
 in VS_OUT {
   vec3 position;
   vec3 normal;
-  vec2 textureCoordinate;
 } fs_in;
 
 layout (std140) uniform camera {
@@ -12,14 +11,13 @@ layout (std140) uniform camera {
   vec4 viewPosition;
 };
 
-uniform sampler2D diffuseTexture;
+uniform vec4 inputColor;
 
 void main() {
   vec3 lightDirection = normalize(vec3(-1.0, 2.0, 0.0));
-  vec3 color = texture(diffuseTexture, fs_in.textureCoordinate).rgb;
   vec3 normal = normalize(fs_in.normal);
-  
-  vec3 viewDirection = normalize(viewPosition - fs_in.position);
+
+  vec3 viewDirection = normalize(viewPosition.xyz - fs_in.position);
 
   vec3 halfwayDirection = normalize(lightDirection + viewDirection);
   float ambient = 0.1;
@@ -27,5 +25,5 @@ void main() {
   float diffuse = max(normalDotLight, 0.0);
   float specular = 0.2 * pow(max(dot(normal, halfwayDirection), 0.0), 32.0);
   float lighting = ambient + diffuse + specular;
-  FragColor = vec4(lighting * color.rgb, 1.0);
+  FragColor = vec4(lighting * inputColor.rgb, inputColor.a);
 }
