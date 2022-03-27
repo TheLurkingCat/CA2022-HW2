@@ -98,7 +98,7 @@ int main() {
   Cylinder cylinder(skeleton.size());
   Motion motions[3] = {Motion(findPath("running.amc").string(), skeleton),
                        Motion(findPath("punch_kick.amc").string(), skeleton)};
-  motions[2] = timewarping(motions[1], 160, 150);
+  motions[2] = motionWarp(motions[1], 160, 150);
   skeleton.setModelMatrix(cylinder.modelMatrix());
   maxFrame = motions[currentMotion].size();
 

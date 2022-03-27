@@ -24,7 +24,7 @@ void forwardKinematics(const Posture& posture, Bone* bone) {
   }
 }
 
-Motion timewarping(const Motion& motion, int oldKeyframe, int newKeyframe) {
+Motion motionWarp(const Motion& motion, int oldKeyframe, int newKeyframe) {
   Motion newMotion = motion;
   int totalFrames = static_cast<int>(motion.size());
   int totalBones = static_cast<int>(motion.posture(0).rotations.size());

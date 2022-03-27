@@ -14,7 +14,7 @@ layout (std140) uniform camera {
 uniform vec4 inputColor;
 
 void main() {
-  vec3 lightDirection = normalize(vec3(-1.0, 2.0, 0.0));
+  vec3 lightDirection = normalize(vec3(25.0, 12.0, -10.0));
   vec3 normal = normalize(fs_in.normal);
 
   vec3 viewDirection = normalize(viewPosition.xyz - fs_in.position);
