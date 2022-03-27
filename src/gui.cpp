@@ -33,11 +33,9 @@ void renderMainPanel() {
     if (ImGui::Button(ICON_PLUS)) {
       currentFrame = std::min(maxFrame - 1, currentFrame + 1);
     }
-    isMotionChanged |= ImGui::RadioButton("running", &currentMotion, 0);
+    isMotionChanged |= ImGui::RadioButton("punch", &currentMotion, 0);
     ImGui::SameLine();
-    isMotionChanged |= ImGui::RadioButton("punch", &currentMotion, 1);
-    ImGui::SameLine();
-    isMotionChanged |= ImGui::RadioButton("punch(warped)", &currentMotion, 2);
+    isMotionChanged |= ImGui::RadioButton("walk_run", &currentMotion, 1);
   }
   ImGui::End();
 }

@@ -35,7 +35,7 @@ struct Bone final {
   bool dofrx = false, dofry = false, dofrz = false;  // Rotate
   bool doftx = false, dofty = false, doftz = false;  // Translate
   // Rotation matrix from parent to child
-  Eigen::Affine3f rotationParentCurrent = Eigen::Affine3f::Identity();
+  Eigen::Quaternionf rotationParentCurrent = Eigen::Quaternionf::Identity();
   // Initial rotation and scaling for bone
   Eigen::Affine3f globalFacing = Eigen::Affine3f::Identity();
   // Bone's start pos in global position
@@ -44,7 +44,7 @@ struct Bone final {
   Eigen::Vector3f endPosition = Eigen::Vector3f::Zero();
   // Bone's rotation in global position
   Eigen::Quaternionf rotation = Eigen::Quaternionf::Identity();
-  // Bone's rotation limits in euler angles
+  // Bone's rotation limits in euler angles, not used in HW2
   float rxmin = 0.0f, rxmax = 360.0f;
   float rymin = 0.0f, rymax = 360.0f;
   float rzmin = 0.0f, rzmax = 360.0f;

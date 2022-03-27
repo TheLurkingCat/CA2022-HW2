@@ -4,11 +4,9 @@ float keyboardMoveSpeed = 0.1f;
 
 int windowWidth = 0;
 int windowHeight = 0;
-int speedMultiplier = 1;
 
 bool isSimulating = false;
 bool isMotionChanged = false;
-bool isUsingCameraPanel = false;
 
 int maxFrame = 0;
 int currentFrame = 0;

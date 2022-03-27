@@ -222,16 +222,15 @@ void Skeleton::rotateLocalCoordinate() {
 
 void Skeleton::computeRotationParent2Child(Bone *parent, Bone *child) {
   if (child != nullptr) {
-    Eigen::Quaternionf child2parent = rotateXYZ(-parent->axis) * rotateZYX(child->axis);
-    child2parent.normalize();
-    child->rotationParentCurrent = child2parent.toRotationMatrix();
+    child->rotationParentCurrent = rotateXYZ(-parent->axis) * rotateZYX(child->axis);
+    child->rotationParentCurrent.normalize();
   }
 }
 
 void Skeleton::computeRotation2Parent(Bone *bone) {
-  Eigen::Quaternionf rootRotation = rotateZYX(bone[0].axis);
-  rootRotation.normalize();
-  bone[0].rotationParentCurrent = rootRotation.toRotationMatrix();
+  bone[0].rotationParentCurrent = rotateZYX(bone[0].axis);
+  bone[0].rotationParentCurrent.normalize();
+
   // Compute rotationParentCurrent for all other bones
   for (size_t i = 0; i < bones.size(); i++) {
     if (bone[i].child != nullptr) {

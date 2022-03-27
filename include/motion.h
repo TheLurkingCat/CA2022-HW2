@@ -14,6 +14,10 @@ class Motion final {
    */
   std::vector<Posture> &posture() { return _posture; }
   /**
+   * @brief Get the const reference of postures
+   */
+  const std::vector<Posture> &posture() const { return _posture; }
+  /**
    * @brief Get posture of specific frame
    */
   Posture &posture(int i) { return _posture[i]; }
