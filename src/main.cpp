@@ -67,7 +67,7 @@ int main() {
   glClearColor(0, 0, 0, 1);
   glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &alignSize);
 
-  speedMultiplier = std::max(1, context.getRefreshRate() / 50);
+  int speedMultiplier = std::max(1, context.getRefreshRate() / 50);
   GUI gui(window, context.getOpenGLVersion());
   // Initialize shaders
   ShaderProgram renderer;
@@ -96,9 +96,11 @@ int main() {
 
   Skeleton skeleton(findPath("skeleton.asf").string(), 0.4f);
   Cylinder cylinder(skeleton.size());
-  Motion motions[3] = {Motion(findPath("running.amc").string(), skeleton),
-                       Motion(findPath("punch_kick.amc").string(), skeleton)};
-  motions[2] = motionWarp(motions[1], 160, 150);
+  Motion OriginMotion[3] = {Motion(findPath("punch_kick.amc").string(), skeleton),
+                            Motion(findPath("walk.amc").string(), skeleton),
+                            Motion(findPath("running.amc").string(), skeleton)};
+  Motion motions[2] = {motionWarp(OriginMotion[0], 160, 150), motionBlend(OriginMotion[1], OriginMotion[2])};
+
   skeleton.setModelMatrix(cylinder.modelMatrix());
   maxFrame = motions[currentMotion].size();
 
@@ -129,9 +131,18 @@ int main() {
       (++currentFrame) %= maxFrame;
       counter %= speedMultiplier;
     }
+    // Render original motion
+    int originalFrame = std::min(OriginMotion[currentMotion].size() - 1, currentFrame);
+    forwardKinematics(OriginMotion[currentMotion].posture(originalFrame), skeleton.bone(0));
+    skeleton.setModelMatrix(cylinder.modelMatrix());
+    renderer.setUniform("inputColor", Eigen::Vector4f(0.0f, 0.5f, 1.0f, 1.0f));
+    cylinder.draw();
+    // Render edited motion
     forwardKinematics(motions[currentMotion].posture(currentFrame), skeleton.bone(0));
     skeleton.setModelMatrix(cylinder.modelMatrix());
+    renderer.setUniform("inputColor", Eigen::Vector4f(0.75f, 0.75f, 0.0f, 1.0f));
     cylinder.draw();
+
     gui.render();
 
 #ifdef __APPLE__

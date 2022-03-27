@@ -6,3 +6,4 @@
 
 void forwardKinematics(const Posture& posture, Bone* root);
 Motion motionWarp(const Motion& motion, int oldKeyframe, int newKeyframe);
+Motion motionBlend(const Motion& motionA, const Motion& motionB);
