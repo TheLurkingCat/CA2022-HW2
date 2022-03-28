@@ -4,12 +4,14 @@
 
 #include "utils.h"
 void forwardKinematics(const Posture& posture, Bone* bone) {
-  // TODO
+  // TODO (FK)
   // You should set these variables:
   //     bone->startPosition = Eigen::Vector3f::Zero();
   //     bone->endPosition = Eigen::Vector3f::Zero();
   //     bone->rotation = Eigen::Quaternionf::Identity();
   // The sample above just set everything to initial state
+  // Hint:
+  //   1. posture.translations, posture.rotations
   // Note:
   //   1. This function will be called with bone == root bone of the skeleton
   while (bone != nullptr) {
@@ -34,10 +36,19 @@ Motion motionWarp(const Motion& motion, int oldKeyframe, int newKeyframe) {
   for (int i = 0; i < totalFrames; ++i) {
     for (int j = 0; j < totalBones; ++j) {
       // TODO (Time warping)
+      // original: |--------------|---------------|
+      // new     : |------------------|-----------|
+      // OR
+      // original: |--------------|---------------|
+      // new     : |----------|-------------------|
       // You should set these variables:
       //     newMotion.posture(i).translations[j] = Eigen::Vector3f::Zero();
       //     newMotion.posture(i).rotations[j] = Eigen::Quaternionf::Identity();
       // The sample above just set to initial state
+      // Hint:
+      //   1. Your should scale the frames before and after key frames.
+      //   2. You can use linear interpolation with translations.
+      //   3. You should use spherical linear interpolation for rotations.
     }
   }
 
@@ -76,14 +87,15 @@ Motion motionBlend(const Motion& motionA, const Motion& motionB) {
   //   1. Find motionB's starting posture
   //   2. Match it with the minimum cost posture in `matchRange`
   //   3. Find to translation and rotation offset between matched motionA and motionB's start
-  //   4. Begin from the matched frame, blend `blendFrameCount` of frames, with a blendFactor from 1 / `blendFrameCount`
-  //   to 1
+  //   4. Begin from the matched frame, blend `blendFrameCount` of frames,
+  //      with a blendFactor from 1 / `blendFrameCount` to 1
   //   5. Add remaining motionB to newMotion
   // Note:
   //   1. The offset found in 3 should apply to 4 and 5
   //   2. A simple cost function is translation offsets between two posture.
   //   3. A better one considered both translations and rotations.
-  //   4. Your animation should smoothly change from motionA to motionB .
+  //   4. Your animation should smoothly change from motionA to motionB.
+  //   5. You can adjust those `constexpr`s above by yourself if you need.
   const Posture& firstB = motionB.posture(0);
   int start = motionA.size() - matchRange - blendFrameCount;
   int boneNum = static_cast<int>(motionA.posture(0).rotations.size());

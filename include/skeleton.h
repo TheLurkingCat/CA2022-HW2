@@ -4,7 +4,7 @@
 
 #include "bone.h"
 
-class Skeleton final {
+class Skeleton {
  public:
   explicit Skeleton(const std::string &filename, float scale_ = 0.2f) noexcept;
   /**
@@ -15,31 +15,57 @@ class Skeleton final {
    * @brief Get total bones in the skeleton
    */
   int size() const { return static_cast<int>(bones.size()); }
-  // get total movable bones in the skeleton
+  /**
+   * @brief Get total movable bones in the skeleton
+   */
   int movableBoneNum() const { return _movableBones; }
-  // get specific bone by its index
+  /**
+   * @brief Get specific bone by its index
+   */
   Bone *bone(int bone_idx) { return &bones[bone_idx]; }
+  /**
+   * @brief Get specific bone by its index
+   */
   const Bone *const bone(int bone_idx) const { return &bones[bone_idx]; }
+  /**
+   * @brief Get specific bone by its name
+   */
   Bone *bone(const std::string &name);
+  /**
+   * @brief Get specific bone by its index
+   */
   const Bone *const bone(const std::string &name) const;
-  // set bone's model matrices (for rendering)
+  /**
+   * @brief Set bone's model matrices (for rendering)
+   */
   void setModelMatrix(Eigen::Ref<Eigen::Matrix4Xf> modelMatrix);
 
  private:
+  /**
+   * @brief Read Acclaim Skeleton File
+   */
   bool readASFFile(const std::string &file_name);
-  // This function sets sibling or child for parent bone
-  // If parent bone does not have a child,
-  // then pChild is set as parent's child
-  // else pChild is set as a sibling of parents already existing child
+  /**
+   * @brief This function sets sibling or child for parent bone.
+   * If parent bone does not have a child, then `child` is set as parent's child
+   * else `child` is set as a sibling of parents already existing child
+   */
   int setChildrenSibling(Bone *parent, Bone *child);
-  // Transform the direction vector (dir),
-  // which is defined in character's global coordinate system in the ASF file,
-  // to local coordinate
+  /**
+   * @brief Transform the direction vector,
+   * which is defined in character's global coordinate system in the ASF file, to local coordinate
+   */
   void rotateLocalCoordinate();
+  /**
+   * @brief Rotation from parent bone to child bone.
+   */
   void computeRotationParent2Child(Bone *parent, Bone *child);
+  /**
+   * @brief Rotation from child bone to parent bone.
+   */
   void computeRotation2Parent(Bone *bone);
 
   float _scale = 0.2f;
-  int _movableBones = 1;
+  int _movableBones = 0;
   std::vector<Bone> bones = std::vector<Bone>(1);
 };

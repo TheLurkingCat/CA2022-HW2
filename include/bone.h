@@ -8,7 +8,7 @@
 // this structure defines the property of each bone segment, including its
 // connection to other bones, DOF (degrees of freedom), relative orientation and
 // distance to the outboard bone
-struct Bone final {
+struct Bone {
   // Pointer to the sibling (branch bone) in the hierarchy tree
   Bone *sibling = nullptr;
   // Pointer to the child (outboard bone) in the hierarchy tree

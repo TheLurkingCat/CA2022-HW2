@@ -5,8 +5,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-class Posture final {
- public:
+struct Posture final {
   Posture() noexcept = default;
   explicit Posture(const std::size_t size) noexcept;
 

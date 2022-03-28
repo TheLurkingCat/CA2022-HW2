@@ -7,7 +7,7 @@
 #include "utils.h"
 #include "vertexarray.h"
 
-class Cylinder final {
+class Cylinder {
  public:
   MOVE_ONLY(Cylinder)
   explicit Cylinder(int size) noexcept;

@@ -5,10 +5,10 @@
 #include "posture.h"
 #include "skeleton.h"
 
-class Motion final {
+class Motion {
  public:
-  Motion(const std::string &amc_file, const Skeleton &skeleton) noexcept;
   Motion() noexcept = default;
+  Motion(const std::string &amc_file, const Skeleton &skeleton) noexcept;
   /**
    * @brief Get the reference of postures
    */
