@@ -11,8 +11,6 @@ fi
 git apply --ignore-whitespace script/homework.patch \
 && zip -qr9 HW2.zip \
 extern \
-script/pack.ps1 \
-script/pack.sh \
 cmake \
 HW2 \
 include \
