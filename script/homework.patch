@@ -1,0 +1,109 @@
+diff --git a/src/kinematics.cpp b/src/kinematics.cpp
+index 8b38a50..68bee87 100644
+--- a/src/kinematics.cpp
++++ b/src/kinematics.cpp
+@@ -14,19 +14,8 @@ void forwardKinematics(const Posture& posture, Bone* bone) {
+   //   1. posture.translations, posture.rotations
+   // Note:
+   //   1. This function will be called with bone == root bone of the skeleton
+-  while (bone != nullptr) {
+-    if (bone->parent == nullptr) {
+-      bone->startPosition = bone->endPosition = posture.translations[0];
+-      bone->rotation = posture.rotations[0];
+-    } else {
+-      bone->rotation = bone->parent->rotation * bone->rotationParentCurrent * posture.rotations[bone->idx];
+-      bone->startPosition = bone->endPosition = bone->parent->endPosition;
+-      bone->endPosition += posture.translations[bone->idx];
+-      bone->endPosition += bone->rotation * bone->direction * bone->length;
+-    }
+-    forwardKinematics(posture, bone->child);
+-    bone = bone->sibling;
+-  }
++
++  // Write your code here
+ }
+ 
+ Motion motionWarp(const Motion& motion, int oldKeyframe, int newKeyframe) {
+@@ -34,6 +23,7 @@ Motion motionWarp(const Motion& motion, int oldKeyframe, int newKeyframe) {
+   int totalFrames = static_cast<int>(motion.size());
+   int totalBones = static_cast<int>(motion.posture(0).rotations.size());
+   for (int i = 0; i < totalFrames; ++i) {
++    // Maybe set some per=Frame variables here
+     for (int j = 0; j < totalBones; ++j) {
+       // TODO (Time warping)
+       // original: |--------------|---------------|
+@@ -49,27 +39,10 @@ Motion motionWarp(const Motion& motion, int oldKeyframe, int newKeyframe) {
+       //   1. Your should scale the frames before and after key frames.
+       //   2. You can use linear interpolation with translations.
+       //   3. You should use spherical linear interpolation for rotations.
+-    }
+-  }
+-
+-  float beforeMid = static_cast<float>(oldKeyframe) / newKeyframe;
+-  float afterMid = static_cast<float>(totalFrames - oldKeyframe) / (totalFrames - newKeyframe);
+-  for (int i = 0; i < totalFrames; ++i) {
+-    float index = i <= newKeyframe ? i * beforeMid : oldKeyframe + afterMid * (i - newKeyframe);
+-
+-    int left = std::max(0, static_cast<int>(std::floor(index)));
+-    int right = std::min(totalFrames - 1, static_cast<int>(std::ceil(index)));
+-    float step = index - left;
+-    for (int j = 0; j < totalBones; ++j) {
+-      newMotion.posture(i).translations[j] =
+-          (1 - step) * newMotion.posture(left).translations[j] + step * newMotion.posture(right).translations[j];
+ 
+-      Eigen::Quaternionf first = newMotion.posture(left).rotations[j];
+-      Eigen::Quaternionf secend = newMotion.posture(right).rotations[j];
+-      newMotion.posture(i).rotations[j] = first.slerp(step, secend);
++      // Write your code here
+     }
+   }
+-
+   return newMotion;
+ }
+ 
+@@ -96,44 +69,7 @@ Motion motionBlend(const Motion& motionA, const Motion& motionB) {
+   //   3. A better one considered both translations and rotations.
+   //   4. Your animation should smoothly change from motionA to motionB.
+   //   5. You can adjust those `constexpr`s above by yourself if you need.
+-  const Posture& firstB = motionB.posture(0);
+-  int start = motionA.size() - matchRange - blendFrameCount;
+-  int boneNum = static_cast<int>(motionA.posture(0).rotations.size());
+-  for (int i = 0; i < matchRange; ++i) {
+-    for (int j = 1; j < boneNum; ++j) {
+-      difference[i] += (motionA.posture(start + i).translations[j] - firstB.translations[j]).norm();
+-    }
+-  }
+-  int blendStart = static_cast<int>(std::min_element(difference, difference + matchRange) - difference);
+-  newMotion.posture().insert(newMotion.posture().end(), motionA.posture().begin(),
+-                             motionA.posture().begin() + start + blendStart);
+-
+-  const Posture& firstA = motionA.posture(start + blendStart + 1);
+-  Eigen::Vector3f rootTranslate = firstA.translations[0] - firstB.translations[0];
+-  Eigen::Quaternionf rootRotation = firstB.rotations[0].inverse() * firstA.rotations[0];
+ 
+-  for (int i = 0; i < blendFrameCount; ++i) {
+-    Posture& temp = newMotion.posture().emplace_back(boneNum);
+-    float currentFactor = blendFactor * (i + 1);
+-    // root
+-    temp.translations[0] = (1 - currentFactor) * motionA.posture(start + blendStart + i + 1).translations[0] +
+-                           currentFactor * (motionB.posture(i).translations[0] + rootTranslate);
+-    temp.rotations[0] = motionA.posture(start + blendStart + i + 1)
+-                            .rotations[0]
+-                            .slerp(currentFactor, motionB.posture(i).rotations[0] * rootRotation);
+-    for (int j = 1; j < boneNum; ++j) {
+-      temp.translations[j] = (1 - currentFactor) * motionA.posture(start + blendStart + i + 1).translations[j] +
+-                             currentFactor * motionB.posture(i).translations[j];
+-      temp.rotations[j] = motionA.posture(start + blendStart + i + 1)
+-                              .rotations[j]
+-                              .slerp(currentFactor, motionB.posture(i).rotations[j]);
+-    }
+-  }
+-
+-  for (int i = blendFrameCount; i < motionB.size(); ++i) {
+-    Posture& temp = newMotion.posture().emplace_back(motionB.posture(i));
+-    temp.translations[0] = motionB.posture(i).translations[0] + rootTranslate;
+-    temp.rotations[0] = motionB.posture(i).rotations[0] * rootRotation;
+-  }
++  // Write your code here
+   return newMotion;
+ }
