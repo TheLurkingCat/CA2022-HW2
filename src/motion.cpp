@@ -44,7 +44,7 @@ bool Motion::readAMCFile(const std::string &filename, const Skeleton &skeleton) 
       if (bone.dofrx) input_stream >> bone_rotation[0];
       if (bone.dofry) input_stream >> bone_rotation[1];
       if (bone.dofrz) input_stream >> bone_rotation[2];
-      bone_rotation *= (EIGEN_PI / 180.0);
+      bone_rotation *= static_cast<float>(EIGEN_PI / 180.0L);
 
       current_posture.rotations[bone_idx] = rotateZYX(bone_rotation);
       current_posture.translations[bone_idx] = std::move(bone_translation);

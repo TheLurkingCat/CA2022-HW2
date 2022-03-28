@@ -39,7 +39,7 @@ class Skeleton final {
   void computeRotationParent2Child(Bone *parent, Bone *child);
   void computeRotation2Parent(Bone *bone);
 
-  float _scale = 0.2;
+  float _scale = 0.2f;
   int _movableBones = 1;
   std::vector<Bone> bones = std::vector<Bone>(1);
 };

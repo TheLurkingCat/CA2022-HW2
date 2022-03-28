@@ -72,8 +72,8 @@ GUI::GUI(GLFWwindow* window, int version) {
   ImFontConfig config;
   config.GlyphMaxAdvanceX = 8.0f;
   config.GlyphMinAdvanceX = 8.0f;
-  config.OversampleH = 1.0f;
-  config.OversampleV = 1.0f;
+  config.OversampleH = 1;
+  config.OversampleV = 1;
   config.PixelSnapH = true;
   io.Fonts->AddFontDefault(&config);
   config.MergeMode = true;

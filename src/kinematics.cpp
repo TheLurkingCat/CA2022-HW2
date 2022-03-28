@@ -86,13 +86,13 @@ Motion motionBlend(const Motion& motionA, const Motion& motionB) {
   //   4. Your animation should smoothly change from motionA to motionB .
   const Posture& firstB = motionB.posture(0);
   int start = motionA.size() - matchRange - blendFrameCount;
-  int boneNum = motionA.posture(0).rotations.size();
+  int boneNum = static_cast<int>(motionA.posture(0).rotations.size());
   for (int i = 0; i < matchRange; ++i) {
     for (int j = 1; j < boneNum; ++j) {
       difference[i] += (motionA.posture(start + i).translations[j] - firstB.translations[j]).norm();
     }
   }
-  int blendStart = std::min_element(difference, difference + matchRange) - difference;
+  int blendStart = static_cast<int>(std::min_element(difference, difference + matchRange) - difference);
   newMotion.posture().insert(newMotion.posture().end(), motionA.posture().begin(),
                              motionA.posture().begin() + start + blendStart);
 

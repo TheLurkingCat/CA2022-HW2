@@ -138,7 +138,7 @@ Cylinder::Cylinder(int size) noexcept : _modelMatrix(4, size * 4), isUpdated(fal
 }
 
 void Cylinder::draw() {
-  int nCylinder = _modelMatrix.cols() / 4;
+  int nCylinder = static_cast<int>(_modelMatrix.cols()) / 4;
   if (isUpdated) {
     models.load(0, 16 * nCylinder * sizeof(GLfloat), _modelMatrix.data());
     isUpdated = false;

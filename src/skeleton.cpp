@@ -127,7 +127,7 @@ bool Skeleton::readASFFile(const std::string &filename) {
       // system relative to the world coordinate system
       if (keyword == "axis") {
         input_stream >> current_bone.axis[0] >> current_bone.axis[1] >> current_bone.axis[2];
-        current_bone.axis *= (EIGEN_PI / 180.0);
+        current_bone.axis *= static_cast<float>(EIGEN_PI / 180.0L);
         continue;
       }
       // this line describes the bone's dof

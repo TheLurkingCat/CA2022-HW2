@@ -84,7 +84,7 @@ int main() {
     renderer.setUniform("inputColor", Eigen::Vector4f(0.7f, 0.7f, 0.0f, 1.0f));
   }
   // -0.121711i + 0.543665j + -0.080055k + -0.826563
-  Eigen::Quaternionf init(-0.826563, -0.121711, 0.543665, -0.080055);
+  Eigen::Quaternionf init(-0.826563f, -0.121711f, 0.543665f, -0.080055f);
   Camera camera(Eigen::Vector3f(25.0f, 12.0f, -10.0f), init);
   camera.updateView();
 
