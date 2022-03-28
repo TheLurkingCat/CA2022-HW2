@@ -66,6 +66,6 @@ class Skeleton {
   void computeRotation2Parent(Bone *bone);
 
   float _scale = 0.2f;
-  int _movableBones = 0;
+  int _movableBones = 1;
   std::vector<Bone> bones = std::vector<Bone>(1);
 };
