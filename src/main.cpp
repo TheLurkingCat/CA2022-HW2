@@ -127,21 +127,22 @@ int main() {
     }
     if (isSimulating) ++counter;
     if (counter >= speedMultiplier) {
-      (++currentFrame) %= maxFrame;
+      if (maxFrame > 0) (++currentFrame) %= maxFrame;
       counter %= speedMultiplier;
     }
-    // Render original motion
-    int originalFrame = std::min(OriginMotion[currentMotion].size() - 1, currentFrame);
-    forwardKinematics(OriginMotion[currentMotion].posture(originalFrame), skeleton.bone(0));
-    skeleton.setModelMatrix(cylinder.modelMatrix());
-    renderer.setUniform("inputColor", Eigen::Vector4f(0.0f, 0.5f, 1.0f, 1.0f));
-    cylinder.draw();
-    // Render edited motion
-    forwardKinematics(motions[currentMotion].posture(currentFrame), skeleton.bone(0));
-    skeleton.setModelMatrix(cylinder.modelMatrix());
-    renderer.setUniform("inputColor", Eigen::Vector4f(0.75f, 0.75f, 0.0f, 1.0f));
-    cylinder.draw();
-
+    if (maxFrame > 0) {
+      // Render original motion
+      int originalFrame = std::min(OriginMotion[currentMotion].size() - 1, currentFrame);
+      forwardKinematics(OriginMotion[currentMotion].posture(originalFrame), skeleton.bone(0));
+      skeleton.setModelMatrix(cylinder.modelMatrix());
+      renderer.setUniform("inputColor", Eigen::Vector4f(0.0f, 0.5f, 1.0f, 1.0f));
+      cylinder.draw();
+      // Render edited motion
+      forwardKinematics(motions[currentMotion].posture(currentFrame), skeleton.bone(0));
+      skeleton.setModelMatrix(cylinder.modelMatrix());
+      renderer.setUniform("inputColor", Eigen::Vector4f(0.75f, 0.75f, 0.0f, 1.0f));
+      cylinder.draw();
+    }
     gui.render();
 
 #ifdef __APPLE__

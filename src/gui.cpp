@@ -12,7 +12,8 @@ void renderMainPanel() {
   ImGui::SetNextWindowBgAlpha(0.2f);
 
   if (ImGui::Begin(ICON_CODE " Frame Control")) {
-    ImGui::SliderInt("Current frame", &currentFrame, 0, maxFrame - 1);
+    int upperBound = std::max(0, maxFrame - 1);
+    ImGui::SliderInt("Current frame", &currentFrame, 0, upperBound);
     if (ImGui::Button(ICON_PLAY)) {
       isSimulating = true;
     }
@@ -31,7 +32,7 @@ void renderMainPanel() {
     }
     ImGui::SameLine();
     if (ImGui::Button(ICON_PLUS)) {
-      currentFrame = std::min(maxFrame - 1, currentFrame + 1);
+      currentFrame = std::min(upperBound, currentFrame + 1);
     }
     isMotionChanged |= ImGui::RadioButton("punch", &currentMotion, 0);
     ImGui::SameLine();
