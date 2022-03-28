@@ -15,7 +15,7 @@ class Shader {
   CONSTEXPR_VIRTUAL virtual GLenum getType() const = 0;
   GLuint getHandle() const;
   bool checkCompileState() const;
-  void fromFile(const std::filesystem::path& filename) const;
+  void fromFile(const std::string& filename) const;
   void fromString(const std::string& shadercode) const;
 
  protected:

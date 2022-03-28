@@ -1,5 +1,4 @@
 #pragma once
-#include <filesystem>
 #include <stdexcept>
 #include <string>
 
@@ -56,4 +55,4 @@ Eigen::Matrix4f lookAt(const Eigen::Ref<const Eigen::Vector3f> &position,
                        const Eigen::Ref<const Eigen::Vector3f> &up);
 Eigen::Matrix4f perspective(float fov, float aspect, float zNear, float zFar);
 Eigen::Matrix4f ortho(float left, float right, float bottom, float top, float zNear, float zFar);
-std::filesystem::path findPath(const std::string &filename);
+std::string findPath(const std::string &filename);

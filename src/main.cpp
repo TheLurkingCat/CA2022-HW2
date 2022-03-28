@@ -94,11 +94,10 @@ int main() {
   cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.position().data());
   cameraUBO.bindUniformBlockIndex(0, 0, uboAlign(20 * sizeof(GLfloat)));
 
-  Skeleton skeleton(findPath("skeleton.asf").string(), 0.4f);
+  Skeleton skeleton(findPath("skeleton.asf"), 0.4f);
   Cylinder cylinder(skeleton.size());
-  Motion OriginMotion[3] = {Motion(findPath("punch_kick.amc").string(), skeleton),
-                            Motion(findPath("walk.amc").string(), skeleton),
-                            Motion(findPath("running.amc").string(), skeleton)};
+  Motion OriginMotion[3] = {Motion(findPath("punch_kick.amc"), skeleton), Motion(findPath("walk.amc"), skeleton),
+                            Motion(findPath("running.amc"), skeleton)};
   Motion motions[2] = {motionWarp(OriginMotion[0], 160, 150), motionBlend(OriginMotion[1], OriginMotion[2])};
 
   skeleton.setModelMatrix(cylinder.modelMatrix());

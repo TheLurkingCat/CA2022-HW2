@@ -3,10 +3,10 @@
 #include <string>
 
 namespace {
-std::string readFile(const std::filesystem::path& filename) {
+std::string readFile(const std::string& filename) {
   std::ifstream shaderFile(filename);
   if (!shaderFile) {
-    std::string err = "Cannot open shader file: " + filename.string();
+    std::string err = "Cannot open shader file: " + filename;
     if (glDebugMessageInsert) {
       glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, -1,
                            err.c_str());
@@ -40,7 +40,7 @@ bool Shader::checkCompileState() const {
   return success;
 }
 
-void Shader::fromFile(const std::filesystem::path& filename) const { this->fromString(readFile(filename)); }
+void Shader::fromFile(const std::string& filename) const { this->fromString(readFile(filename)); }
 
 void Shader::fromString(const std::string& shaderCode) const {
   auto shaderCodePointer = shaderCode.c_str();

@@ -1,22 +1,21 @@
 #include "utils.h"
 #include <Eigen/Dense>
+#include <fstream>
 #include <iostream>
 
 using Eigen::Matrix4f;
 using Eigen::Vector3f;
 
 namespace {
-std::filesystem::path findAssetPath() {
-  namespace fs = std::filesystem;
-  std::filesystem::path assetPath = fs::current_path();
-  while (!fs::exists(assetPath / "assets/.placeholder") && assetPath.has_relative_path()) {
-    assetPath = assetPath.parent_path();
+std::string findAssetPath() {
+  std::string assetPath = "assets/";
+  std::string testFile = ".placeholder";
+  // Recursive limit to 5
+  for (int i = 0; i < 5; ++i) {
+    std::ifstream test(assetPath + testFile);
+    if (test) break;
+    assetPath = "../" + assetPath;
   }
-  if (!fs::exists(assetPath / "assets/.placeholder")) {
-    std::cerr << "Asset not found" << std::endl;
-    exit(EXIT_FAILURE);
-  }
-  assetPath /= "assets";
   return assetPath;
 }
 }  // namespace
@@ -76,7 +75,7 @@ Matrix4f ortho(float left, float right, float bottom, float top, float zNear, fl
   return mat;
 }
 
-std::filesystem::path findPath(const std::string& filename) {
-  static std::filesystem::path assetPath = findAssetPath();
-  return assetPath / filename;
+std::string findPath(const std::string& filename) {
+  static std::string assetPath = findAssetPath();
+  return assetPath + filename;
 }
