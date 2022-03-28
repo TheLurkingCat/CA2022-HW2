@@ -56,7 +56,6 @@
     <ClInclude Include="..\include\posture.h" />
     <ClInclude Include="..\include\shader.h" />
     <ClInclude Include="..\include\skeleton.h" />
-    <ClInclude Include="..\include\spring.h" />
     <ClInclude Include="..\include\utils.h" />
     <ClInclude Include="..\include\vertexarray.h" />
   </ItemGroup>
