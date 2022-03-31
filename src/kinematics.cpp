@@ -114,7 +114,7 @@ Motion motionBlend(const Motion& motionA, const Motion& motionB) {
 
   for (int i = 0; i < blendFrameCount; ++i) {
     Posture& temp = newMotion.posture().emplace_back(boneNum);
-    float currentFactor = blendFactor * (i + 1);
+    float currentFactor = 0.5f + std::sin(EIGEN_PI * blendFactor * i - EIGEN_PI / 2) / 2;
     // root
     temp.translations[0] = (1 - currentFactor) * motionA.posture(start + blendStart + i + 1).translations[0] +
                            currentFactor * (motionB.posture(i).translations[0] + rootTranslate);
