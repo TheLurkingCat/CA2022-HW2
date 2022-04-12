@@ -59,11 +59,7 @@ class Skeleton {
   /**
    * @brief Rotation from parent bone to child bone.
    */
-  void computeRotationParent2Child(Bone *parent, Bone *child);
-  /**
-   * @brief Rotation from child bone to parent bone.
-   */
-  void computeRotation2Parent(Bone *bone);
+  void computeRotationParent2Child();
 
   float _scale = 0.2f;
   int _movableBones = 1;

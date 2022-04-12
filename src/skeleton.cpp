@@ -15,7 +15,6 @@ Skeleton::Skeleton(const std::string &file_name, float scale_) noexcept : _scale
   bones[0].sibling = nullptr;
   bones[0].child = nullptr;
   bones[0].direction.setZero();
-  bones[0].axis.setZero();
   bones[0].length = 0;
   bones[0].dof = 6;
   bones[0].dofrx = true;
@@ -31,7 +30,7 @@ Skeleton::Skeleton(const std::string &file_name, float scale_) noexcept : _scale
   rotateLocalCoordinate();
   // Calculate rotation from each bone local coordinate system to the coordinate system of its parent
   // store it in rotationParentCurrent variable for each bone
-  computeRotation2Parent(&bones[0]);
+  computeRotationParent2Child();
   // Compute global facing of the bones
   for (size_t i = 0; i < bones.size(); ++i) {
     auto &&bone = bones[i];
@@ -126,8 +125,14 @@ bool Skeleton::readASFFile(const std::string &filename) {
       // this line describes the orientation of bone's local coordinate
       // system relative to the world coordinate system
       if (keyword == "axis") {
-        input_stream >> current_bone.axis[0] >> current_bone.axis[1] >> current_bone.axis[2];
-        current_bone.axis *= static_cast<float>(EIGEN_PI / 180.0L);
+        float rx, ry, rz;
+        input_stream >> rx >> ry >> rz;
+        rx *= static_cast<float>(EIGEN_PI / 180.0L);
+        ry *= static_cast<float>(EIGEN_PI / 180.0L);
+        rz *= static_cast<float>(EIGEN_PI / 180.0L);
+        current_bone.axis = Eigen::AngleAxisf(rz, Eigen::Vector3f::UnitZ()) *
+                            Eigen::AngleAxisf(ry, Eigen::Vector3f::UnitY()) *
+                            Eigen::AngleAxisf(rx, Eigen::Vector3f::UnitX());
         continue;
       }
       // this line describes the bone's dof
@@ -216,30 +221,20 @@ int Skeleton::setChildrenSibling(Bone *parent, Bone *child) {
 void Skeleton::rotateLocalCoordinate() {
   for (size_t i = 1; i < bones.size(); ++i) {
     // Transform direction vector into local coordinate system
-    bones[i].direction = Eigen::Affine3f(rotateXYZ(-bones[i].axis)) * bones[i].direction;
+    bones[i].direction = bones[i].axis.inverse() * bones[i].direction;
   }
 }
 
-void Skeleton::computeRotationParent2Child(Bone *parent, Bone *child) {
-  if (child != nullptr) {
-    child->rotationParentCurrent = rotateXYZ(-parent->axis) * rotateZYX(child->axis);
-    child->rotationParentCurrent.normalize();
-  }
-}
-
-void Skeleton::computeRotation2Parent(Bone *bone) {
-  bone[0].rotationParentCurrent = rotateZYX(bone[0].axis);
-  bone[0].rotationParentCurrent.normalize();
-
+void Skeleton::computeRotationParent2Child() {
+  bones[0].rotationParentCurrent = bones[0].axis;
   // Compute rotationParentCurrent for all other bones
   for (size_t i = 0; i < bones.size(); i++) {
-    if (bone[i].child != nullptr) {
-      this->computeRotationParent2Child(&bone[i], bone[i].child);
+    if (bones[i].child != nullptr) {
+      bones[i].child->rotationParentCurrent = bones[i].axis.inverse() * bones[i].child->axis;
       // compute parent child siblings...
-      Bone *tmp = nullptr;
-      if (bone[i].child != nullptr) tmp = (bone[i].child)->sibling;
+      Bone *tmp = bones[i].child->sibling;
       while (tmp != nullptr) {
-        this->computeRotationParent2Child(&bone[i], tmp);
+        tmp->rotationParentCurrent = bones[i].axis.inverse() * tmp->axis;
         tmp = tmp->sibling;
       }
     }

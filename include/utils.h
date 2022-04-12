@@ -48,8 +48,6 @@
 #endif
 
 constexpr float toRadians(double x) { return static_cast<float>(x * EIGEN_PI / 180); }
-Eigen::Quaternionf rotateZYX(const Eigen::Ref<const Eigen::Vector3f> &rotation);
-Eigen::Quaternionf rotateXYZ(const Eigen::Ref<const Eigen::Vector3f> &rotation);
 Eigen::Matrix4f lookAt(const Eigen::Ref<const Eigen::Vector3f> &position,
                        const Eigen::Ref<const Eigen::Vector3f> &front,
                        const Eigen::Ref<const Eigen::Vector3f> &up);

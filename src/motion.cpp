@@ -36,17 +36,21 @@ bool Motion::readAMCFile(const std::string &filename, const Skeleton &skeleton) 
       input_stream >> bone_name;
       const Bone &bone = *(skeleton.bone(bone_name));
       int bone_idx = bone.idx;
-      Eigen::Vector3f bone_rotation = Eigen::Vector3f::Zero();
+      float rx = 0, ry = 0, rz = 0;
       Eigen::Vector3f bone_translation = Eigen::Vector3f::Zero();
       if (bone.doftx) input_stream >> bone_translation[0];
       if (bone.dofty) input_stream >> bone_translation[1];
       if (bone.doftz) input_stream >> bone_translation[2];
-      if (bone.dofrx) input_stream >> bone_rotation[0];
-      if (bone.dofry) input_stream >> bone_rotation[1];
-      if (bone.dofrz) input_stream >> bone_rotation[2];
-      bone_rotation *= static_cast<float>(EIGEN_PI / 180.0L);
+      if (bone.dofrx) input_stream >> rx;
+      if (bone.dofry) input_stream >> ry;
+      if (bone.dofrz) input_stream >> rz;
+      rx *= static_cast<float>(EIGEN_PI / 180.0L);
+      ry *= static_cast<float>(EIGEN_PI / 180.0L);
+      rz *= static_cast<float>(EIGEN_PI / 180.0L);
 
-      current_posture.rotations[bone_idx] = rotateZYX(bone_rotation);
+      current_posture.rotations[bone_idx] = Eigen::AngleAxisf(rz, Eigen::Vector3f::UnitZ()) *
+                                            Eigen::AngleAxisf(ry, Eigen::Vector3f::UnitY()) *
+                                            Eigen::AngleAxisf(rx, Eigen::Vector3f::UnitX());
       current_posture.translations[bone_idx] = std::move(bone_translation);
       if (bone_idx == 0) current_posture.translations[bone_idx] *= skeleton.scale();
     }
