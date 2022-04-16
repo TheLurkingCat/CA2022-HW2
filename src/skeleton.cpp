@@ -165,6 +165,28 @@ bool Skeleton::readASFFile(const std::string &filename) {
             std::cerr << "Unknown token: " << token << std::endl;
           }
         }
+        continue;
+      }
+      if (keyword == "limits") {
+        char c;
+        if (current_bone.dofrx) {
+          input_stream >> c >> current_bone.rxmin >> current_bone.rxmax >> c;
+          current_bone.rxmin *= static_cast<float>(EIGEN_PI / 180.0L);
+          current_bone.rxmax *= static_cast<float>(EIGEN_PI / 180.0L);
+          std::cout << current_bone.rxmin << " " << current_bone.rxmax << std::endl;
+        }
+        if (current_bone.dofry) {
+          input_stream >> c >> current_bone.rymin >> current_bone.rymax >> c;
+          current_bone.rymin *= static_cast<float>(EIGEN_PI / 180.0L);
+          current_bone.rymax *= static_cast<float>(EIGEN_PI / 180.0L);
+          std::cout << current_bone.rymin << " " << current_bone.rymax << std::endl;
+        }
+        if (current_bone.dofrz) {
+          input_stream >> c >> current_bone.rzmin >> current_bone.rzmax >> c;
+          current_bone.rzmin *= static_cast<float>(EIGEN_PI / 180.0L);
+          current_bone.rzmax *= static_cast<float>(EIGEN_PI / 180.0L);
+          std::cout << current_bone.rzmin << " " << current_bone.rzmax << std::endl;
+        }
       }
     }
   }

@@ -43,8 +43,8 @@ struct Bone {
   Eigen::Vector3f endPosition = Eigen::Vector3f::Zero();
   // Bone's rotation in global position
   Eigen::Quaternionf rotation = Eigen::Quaternionf::Identity();
-  // Bone's rotation limits in euler angles, not used in HW2
-  float rxmin = 0.0f, rxmax = 360.0f;
-  float rymin = 0.0f, rymax = 360.0f;
-  float rzmin = 0.0f, rzmax = 360.0f;
+  // Bone's rotation limits in radian, which in [-pi, pi]
+  float rxmin = 0.0f, rxmax = 0.0f;
+  float rymin = 0.0f, rymax = 0.0f;
+  float rzmin = 0.0f, rzmax = 0.0f;
 };
