@@ -20,9 +20,8 @@ void forwardKinematics(const Posture& posture, Bone* bone) {
       bone->rotation = posture.rotations[0];
     } else {
       bone->rotation = bone->parent->rotation * bone->rotationParentCurrent * posture.rotations[bone->idx];
-      bone->startPosition = bone->endPosition = bone->parent->endPosition;
-      bone->endPosition += posture.translations[bone->idx];
-      bone->endPosition += bone->rotation * bone->direction * bone->length;
+      bone->startPosition = bone->parent->endPosition + posture.translations[bone->idx];
+      bone->endPosition = bone->startPosition + bone->rotation * bone->direction * bone->length;
     }
     forwardKinematics(posture, bone->child);
     bone = bone->sibling;
