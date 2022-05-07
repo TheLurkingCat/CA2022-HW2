@@ -7,6 +7,7 @@
 class Skeleton {
  public:
   explicit Skeleton(const std::string &filename, float scale_ = 0.2f) noexcept;
+  bool operator==(const Skeleton &other) const noexcept;
   /**
    * @brief Get skeleton's scale
    */

@@ -20,6 +20,18 @@ std::string findAssetPath() {
 }
 }  // namespace
 
+Eigen::Quaternionf rotateZYX(const Eigen::Ref<const Eigen::Vector3f>& rotation) {
+  return Eigen::AngleAxisf(rotation[2], Eigen::Vector3f::UnitZ()) *
+         Eigen::AngleAxisf(rotation[1], Eigen::Vector3f::UnitY()) *
+         Eigen::AngleAxisf(rotation[0], Eigen::Vector3f::UnitX());
+}
+
+Eigen::Quaternionf rotateXYZ(const Eigen::Ref<const Eigen::Vector3f>& rotation) {
+  return Eigen::AngleAxisf(rotation[0], Eigen::Vector3f::UnitX()) *
+         Eigen::AngleAxisf(rotation[1], Eigen::Vector3f::UnitY()) *
+         Eigen::AngleAxisf(rotation[2], Eigen::Vector3f::UnitZ());
+}
+
 Matrix4f lookAt(const Eigen::Ref<const Eigen::Vector3f>& position,
                 const Eigen::Ref<const Eigen::Vector3f>& front,
                 const Eigen::Ref<const Eigen::Vector3f>& up) {

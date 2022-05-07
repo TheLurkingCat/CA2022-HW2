@@ -3,7 +3,7 @@
 #include <algorithm>
 
 #include "utils.h"
-void forwardKinematics(const Posture& posture, Bone* bone) {
+void forwardKinematicsTA(const Posture& posture, Bone* bone) {
   // TODO (FK)
   // You should set these variables:
   //     bone->startPosition = Eigen::Vector3f::Zero();
@@ -23,12 +23,12 @@ void forwardKinematics(const Posture& posture, Bone* bone) {
       bone->startPosition = bone->parent->endPosition + posture.translations[bone->idx];
       bone->endPosition = bone->startPosition + bone->rotation * bone->direction * bone->length;
     }
-    forwardKinematics(posture, bone->child);
+    forwardKinematicsTA(posture, bone->child);
     bone = bone->sibling;
   }
 }
 
-Motion motionWarp(const Motion& motion, int oldKeyframe, int newKeyframe) {
+Motion motionWarpTA(const Motion& motion, int oldKeyframe, int newKeyframe) {
   Motion newMotion = motion;
   int totalFrames = static_cast<int>(motion.size());
   int totalBones = static_cast<int>(motion.posture(0).rotations.size());
@@ -52,7 +52,7 @@ Motion motionWarp(const Motion& motion, int oldKeyframe, int newKeyframe) {
   }
 
   float beforeMid = static_cast<float>(oldKeyframe) / newKeyframe;
-  float afterMid = static_cast<float>(totalFrames - oldKeyframe) / (totalFrames - newKeyframe);
+  float afterMid = static_cast<float>(totalFrames - oldKeyframe - 1) / (totalFrames - newKeyframe - 1);
   for (int i = 0; i < totalFrames; ++i) {
     float index = i <= newKeyframe ? i * beforeMid : oldKeyframe + afterMid * (i - newKeyframe);
 
@@ -72,7 +72,7 @@ Motion motionWarp(const Motion& motion, int oldKeyframe, int newKeyframe) {
   return newMotion;
 }
 
-Motion motionBlend(const Motion& motionA, const Motion& motionB) {
+Motion motionBlendTA(const Motion& motionA, const Motion& motionB) {
   Motion newMotion;
   constexpr int blendFrameCount = 20;
   constexpr float blendFactor = 1.0f / blendFrameCount;

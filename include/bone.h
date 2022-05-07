@@ -25,9 +25,10 @@ struct Bone {
   std::string name = "";
   // Bone length
   float length = 0.0;
-  // Orientation of each bone's local coordinate system as specified in ASF file (axis field)
-  // Stored as R = Rz * Ry * Rx
-  Eigen::Quaternionf axis = Eigen::Quaternionf::Identity();
+  // Orientation of each bone's local coordinate
+  // system as specified in ASF file (axis field)
+  // Notice: Store as radians, not degrees
+  Eigen::Vector3f axis = Eigen::Vector3f::Zero();
   // number of bone's degrees of freedom
   int dof = 0;
   // degree of freedom mask in x, y, z axis (local)

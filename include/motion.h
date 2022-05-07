@@ -9,6 +9,7 @@ class Motion {
  public:
   Motion() noexcept = default;
   Motion(const std::string &amc_file, const Skeleton &skeleton) noexcept;
+  bool operator==(const Motion &other) const noexcept { return _posture == other._posture; }
   /**
    * @brief Get the reference of postures
    */

@@ -46,3 +46,6 @@ lib/
 # Visual Studio (Code)
 .vs/
 .vscode/
+
+# Test
+code/

@@ -84,4 +84,34 @@ add_subdirectory(src)
 add_subdirectory(extern/eigen)
 add_subdirectory(extern/glad)
 add_subdirectory(extern/glfw)
-add_subdirectory(extern/imgui)
+
+file(GLOB CPPFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/code ${CMAKE_CURRENT_SOURCE_DIR}/code/*)
+
+foreach(CPPFILE ${CPPFILES})
+  string(LENGTH ${CPPFILE} STRLEN)
+  math(EXPR IDLEN "${STRLEN} - 4" OUTPUT_FORMAT DECIMAL)
+  string(SUBSTRING ${CPPFILE} 0 ${IDLEN} STUDENT_ID)
+
+  set(HW2_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/code/${CPPFILE}" "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
+  set(HW2_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+  add_executable(${STUDENT_ID} ${HW2_SOURCE})
+  target_include_directories(${STUDENT_ID} PRIVATE ${HW2_INCLUDE_DIR})
+
+  # add_dependencies(${STUDENT_ID} glad glfw eigen )
+  # Can include glfw and glad in arbitrary order
+  target_compile_definitions(${STUDENT_ID} PRIVATE GLFW_INCLUDE_NONE)
+
+  # Prefer std c++20, at least need c++17 to compile
+  set_target_properties(${STUDENT_ID} PROPERTIES
+    CXX_STANDARD 20
+    CXX_EXTENSIONS OFF
+  )
+
+  target_link_libraries(${STUDENT_ID}
+    PRIVATE HW2
+    PRIVATE glad
+    PRIVATE glfw
+    PRIVATE eigen
+  )
+endforeach()

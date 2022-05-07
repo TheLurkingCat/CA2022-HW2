@@ -15,6 +15,7 @@ Skeleton::Skeleton(const std::string &file_name, float scale_) noexcept : _scale
   bones[0].sibling = nullptr;
   bones[0].child = nullptr;
   bones[0].direction.setZero();
+  bones[0].axis.setZero();
   bones[0].length = 0;
   bones[0].dof = 6;
   bones[0].dofrx = true;
@@ -42,6 +43,17 @@ Skeleton::Skeleton(const std::string &file_name, float scale_) noexcept : _scale
     bone.globalFacing = Eigen::AngleAxisf(theta, rotaionAxis);
     bone.globalFacing.scale(Eigen::Vector3f(1.0f, 1.0f, bone.length));
   }
+}
+
+bool Skeleton::operator==(const Skeleton &other) const noexcept {
+  bool pass = true;
+  for (int i = 0; pass && i < bones.size(); ++i) {
+    pass &= ((bones[i].startPosition - other.bones[i].startPosition).norm() < 1e-3f);
+    pass &= ((bones[i].endPosition - other.bones[i].endPosition).norm() < 1e-3f);
+    float rotDiff = std::acos(std::abs(bones[i].rotation.dot(other.bones[i].rotation)));
+    pass &= (rotDiff < 1e-3f || rotDiff != rotDiff);
+  }
+  return pass;
 }
 
 Bone *Skeleton::bone(const std::string &name) {
@@ -125,14 +137,8 @@ bool Skeleton::readASFFile(const std::string &filename) {
       // this line describes the orientation of bone's local coordinate
       // system relative to the world coordinate system
       if (keyword == "axis") {
-        float rx, ry, rz;
-        input_stream >> rx >> ry >> rz;
-        rx *= static_cast<float>(EIGEN_PI / 180.0L);
-        ry *= static_cast<float>(EIGEN_PI / 180.0L);
-        rz *= static_cast<float>(EIGEN_PI / 180.0L);
-        current_bone.axis = Eigen::AngleAxisf(rz, Eigen::Vector3f::UnitZ()) *
-                            Eigen::AngleAxisf(ry, Eigen::Vector3f::UnitY()) *
-                            Eigen::AngleAxisf(rx, Eigen::Vector3f::UnitX());
+        input_stream >> current_bone.axis[0] >> current_bone.axis[1] >> current_bone.axis[2];
+        current_bone.axis *= static_cast<float>(EIGEN_PI / 180.0L);
         continue;
       }
       // this line describes the bone's dof
@@ -204,7 +210,6 @@ bool Skeleton::readASFFile(const std::string &filename) {
       this->setChildrenSibling(parent, this->bone(keyword));
     }
   }
-  std::cout << bones.size() << " bones in " << filename << " are read" << std::endl;
   input_stream.close();
   return true;
 }
@@ -240,20 +245,20 @@ int Skeleton::setChildrenSibling(Bone *parent, Bone *child) {
 void Skeleton::rotateLocalCoordinate() {
   for (size_t i = 1; i < bones.size(); ++i) {
     // Transform direction vector into local coordinate system
-    bones[i].direction = bones[i].axis.inverse() * bones[i].direction;
+    bones[i].direction = rotateXYZ(-bones[i].axis) * bones[i].direction;
   }
 }
 
 void Skeleton::computeRotationParent2Child() {
-  bones[0].rotationParentCurrent = bones[0].axis;
+  bones[0].rotationParentCurrent = rotateZYX(bones[0].axis);
   // Compute rotationParentCurrent for all other bones
   for (size_t i = 0; i < bones.size(); i++) {
     if (bones[i].child != nullptr) {
-      bones[i].child->rotationParentCurrent = bones[i].axis.inverse() * bones[i].child->axis;
+      bones[i].child->rotationParentCurrent = rotateXYZ(-bones[i].axis) * rotateZYX(bones[i].child->axis);
       // compute parent child siblings...
       Bone *tmp = bones[i].child->sibling;
       while (tmp != nullptr) {
-        tmp->rotationParentCurrent = bones[i].axis.inverse() * tmp->axis;
+        tmp->rotationParentCurrent = rotateXYZ(-bones[i].axis) * rotateZYX(tmp->axis);
         tmp = tmp->sibling;
       }
     }
